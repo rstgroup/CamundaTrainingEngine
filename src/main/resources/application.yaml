@@ -4,14 +4,23 @@ spring.datasource:
   password: sa
 spring.h2.console.enabled: true
 camunda.bpm:
-  webapp:
-    application-path: /my/app
   history-level: full
   authorization:
     enabled: true
   filter:
     create: All tasks
   webapp.application-path:
+
+security:
+  oauth2:
+    client:
+      client-id: camunda-identity-service
+      client-secret: cb10508b-320d-4826-b37e-713ba7df5611
+      accessTokenUri: http://localhost:9090/auth/realms/Camunda/protocol/openid-connect/token
+      userAuthorizationUri: http://localhost:9090/auth/realms/Camunda/protocol/openid-connect/auth
+      scope: openid profile email
+    resource:
+      userInfoUri: http://localhost:9090/auth/realms/Camunda/protocol/openid-connect/userinfo
 
 server:
   port: 8080
@@ -23,6 +32,8 @@ logging:
 keycloak:
   # Keycloak access for the Identity Provider plugin.
   url.plugin: ${KEYCLOAK_URL_PLUGIN:http://localhost:9090}
+  url.auth: ${KEYCLOAK_URL_AUTH:http://localhost:9090}
+  url.token: ${KEYCLOAK_URL_TOKEN:http://localhost:9090}
 
   # Keycloak Camunda Identity Client
   client.id: ${KEYCLOAK_CLIENT_ID:camunda-identity-service}
