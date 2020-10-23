@@ -1,0 +1,40 @@
+spring.datasource:
+  url: jdbc:h2:./camunda-db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+  username: sa
+  password: sa
+spring.h2.console.enabled: true
+camunda.bpm:
+  webapp:
+    application-path: /my/app
+  history-level: full
+  authorization:
+    enabled: true
+  filter:
+    create: All tasks
+  webapp.application-path:
+
+server:
+  port: 8080
+logging:
+  level:
+    ROOT: info
+
+# Externalized Keycloak configuration
+keycloak:
+  # Keycloak access for the Identity Provider plugin.
+  url.plugin: ${KEYCLOAK_URL_PLUGIN:http://localhost:9090}
+
+  # Keycloak Camunda Identity Client
+  client.id: ${KEYCLOAK_CLIENT_ID:camunda-identity-service}
+  client.secret: ${KEYCLOAK_CLIENT_SECRET:cb10508b-320d-4826-b37e-713ba7df5611}
+
+# Camunda Keycloak Identity Provider Plugin
+plugin.identity.keycloak:
+  keycloakIssuerUrl: ${keycloak.url.plugin}/auth/realms/Camunda
+  keycloakAdminUrl: ${keycloak.url.plugin}/auth/admin/realms/Camunda
+  clientId: ${keycloak.client.id}
+  clientSecret: ${keycloak.client.secret}
+  useEmailAsCamundaUserId: true
+  useUsernameAsCamundaUserId: false
+  useGroupPathAsCamundaGroupId: true
+  administratorGroupName: camunda-admin
