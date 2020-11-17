@@ -22,6 +22,11 @@ security:
     resource:
       userInfoUri: http://localhost:9090/auth/realms/Camunda/protocol/openid-connect/userinfo
 
+rest.security:
+  enabled: true
+  jwk-set-url: http://localhost:9090/auth/realms/camunda/protocol/openid-connect/certs
+  required-audience: camunda-rest-api
+
 server:
   port: 8080
 logging:

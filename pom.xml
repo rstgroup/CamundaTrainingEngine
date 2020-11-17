@@ -106,6 +106,29 @@
 			<artifactId>camunda-engine-plugin-connect</artifactId>
 			<version>${camunda.version}</version>
 		</dependency>
+		<!-- Required to use Spin dataformat support -->
+		<dependency>
+			<groupId>org.camunda.spin</groupId>
+			<artifactId>camunda-spin-dataformat-all</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.camunda.bpm</groupId>
+			<artifactId>camunda-engine-plugin-spin</artifactId>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/junit/junit -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.13.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.camunda.bpm.assert</groupId>
+			<artifactId>camunda-bpm-assert</artifactId>
+			<version>8.0.0</version>
+			<scope>test</scope>
+		</dependency>
+
 
 
 
