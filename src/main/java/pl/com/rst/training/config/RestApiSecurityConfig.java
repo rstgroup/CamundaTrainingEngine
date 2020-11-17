@@ -2,6 +2,7 @@ package pl.com.rst.training.config;
 
 import javax.inject.Inject;
 
+import org.apache.ibatis.logging.LogFactory;
 import org.camunda.bpm.engine.IdentityService;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;

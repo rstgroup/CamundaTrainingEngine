@@ -4,6 +4,7 @@ import java.util.Collections;
 
 import javax.inject.Inject;
 
+import org.apache.ibatis.logging.LogFactory;
 import org.camunda.bpm.webapp.impl.security.auth.ContainerBasedAuthenticationFilter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
@@ -31,7 +32,6 @@ public class WebAppSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
         http
                 .csrf().ignoringAntMatchers("/api/**", "/engine-rest/**")
                 .and()
