@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_1lsavli" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.5.0">
+  <bpmn:process id="amqp_request_reply_v1" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_0fpem7k</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sendTask id="Activity_06qzbcy" name="Send AMQP message" camunda:delegateExpression="${sendAmqpMessageAdapter}">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="messageBody">Test parameter</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0fpem7k</bpmn:incoming>
+      <bpmn:outgoing>Flow_1pqgm0k</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:sequenceFlow id="Flow_0fpem7k" sourceRef="StartEvent_1" targetRef="Activity_06qzbcy" />
+    <bpmn:sequenceFlow id="Flow_1pqgm0k" sourceRef="Activity_06qzbcy" targetRef="Activity_0zalhkk" />
+    <bpmn:receiveTask id="Activity_0zalhkk" name="Receive AMQP message" messageRef="Message_0ytlb1e">
+      <bpmn:incoming>Flow_1pqgm0k</bpmn:incoming>
+      <bpmn:outgoing>Flow_1wx2g8a</bpmn:outgoing>
+    </bpmn:receiveTask>
+    <bpmn:sequenceFlow id="Flow_1wx2g8a" sourceRef="Activity_0zalhkk" targetRef="Event_0xn9m5m" />
+    <bpmn:intermediateCatchEvent id="Event_0xn9m5m" name="Wait 5 minutes">
+      <bpmn:incoming>Flow_1wx2g8a</bpmn:incoming>
+      <bpmn:outgoing>Flow_1udtjj6</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_0fcdgfi">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT5M</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="Flow_1udtjj6" sourceRef="Event_0xn9m5m" targetRef="Event_1n3lmw5" />
+    <bpmn:endEvent id="Event_1n3lmw5">
+      <bpmn:incoming>Flow_1udtjj6</bpmn:incoming>
+    </bpmn:endEvent>
+  </bpmn:process>
+  <bpmn:message id="Message_0ytlb1e" name="Message_AMQPReply" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="amqp_request_reply_v1">
+      <bpmndi:BPMNEdge id="Flow_0fpem7k_di" bpmnElement="Flow_0fpem7k">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="280" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1pqgm0k_di" bpmnElement="Flow_1pqgm0k">
+        <di:waypoint x="380" y="117" />
+        <di:waypoint x="450" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1wx2g8a_di" bpmnElement="Flow_1wx2g8a">
+        <di:waypoint x="550" y="117" />
+        <di:waypoint x="622" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1udtjj6_di" bpmnElement="Flow_1udtjj6">
+        <di:waypoint x="658" y="117" />
+        <di:waypoint x="732" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1aur69b_di" bpmnElement="Activity_06qzbcy">
+        <dc:Bounds x="280" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1mgm8z1_di" bpmnElement="Activity_0zalhkk">
+        <dc:Bounds x="450" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0jbcihw_di" bpmnElement="Event_0xn9m5m">
+        <dc:Bounds x="622" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="604" y="142" width="73" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1n3lmw5_di" bpmnElement="Event_1n3lmw5">
+        <dc:Bounds x="732" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

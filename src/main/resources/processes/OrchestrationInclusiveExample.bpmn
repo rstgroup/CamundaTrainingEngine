@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_1t3bt6b" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.3.0">
+  <bpmn:process id="Process_02cpmi7" name="OrchestrationInclusiveExample" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_0sr227h</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="Activity_1xgojgv" name="Set-up" camunda:asyncAfter="true">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="shouldFailA" label="Should Service A fail" type="boolean" defaultValue="false" />
+          <camunda:formField id="shouldFailB" label="Should Service B fail" type="boolean" defaultValue="false" />
+          <camunda:formField id="shouldFailD" label="Should Service D fail" type="boolean" defaultValue="false" />
+          <camunda:formField id="shouldRunA" label="Should run A" type="boolean" defaultValue="true" />
+          <camunda:formField id="shouldRunB" label="Should run B" type="boolean" defaultValue="true" />
+          <camunda:formField id="shouldRunD" label="Should run D" type="boolean" defaultValue="true" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0sr227h</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ezj4i0</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_0sr227h" sourceRef="StartEvent_1" targetRef="Activity_1xgojgv" />
+    <bpmn:sequenceFlow id="Flow_0ezj4i0" sourceRef="Activity_1xgojgv" targetRef="Gateway_0l542zz" />
+    <bpmn:inclusiveGateway id="Gateway_0l542zz">
+      <bpmn:incoming>Flow_0ezj4i0</bpmn:incoming>
+      <bpmn:outgoing>Flow_0t9i5zd</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1cr9exk</bpmn:outgoing>
+      <bpmn:outgoing>Flow_145mbof</bpmn:outgoing>
+    </bpmn:inclusiveGateway>
+    <bpmn:serviceTask id="Activity_0hav5sf" name="Service A call&#10;(non idempotent)" camunda:asyncAfter="true" camunda:exclusive="false" camunda:delegateExpression="${restServiceCall}">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="url">http://localhost:8080/rest/v1/example/serviceA?shouldFail=${shouldFailA}</camunda:inputParameter>
+          <camunda:outputParameter name="responseA">${response}</camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0t9i5zd</bpmn:incoming>
+      <bpmn:outgoing>Flow_0g83dks</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0t9i5zd" sourceRef="Gateway_0l542zz" targetRef="Activity_0hav5sf">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${shouldRunA}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="Activity_07vbga2" name="Service B call" camunda:delegateExpression="${restServiceCall}">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="url">http://localhost:8080/rest/v1/example/serviceB?shouldFail=${shouldFailB}</camunda:inputParameter>
+          <camunda:outputParameter name="responseB">${response}</camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1cr9exk</bpmn:incoming>
+      <bpmn:outgoing>Flow_0kxb55g</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1cr9exk" sourceRef="Gateway_0l542zz" targetRef="Activity_07vbga2">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${shouldRunB}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="Activity_11lus82" name="Service D call&#10;(long running)" camunda:asyncBefore="true" camunda:delegateExpression="${restServiceCall}">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="url">http://localhost:8080/rest/v1/example/serviceD?shouldFail=${shouldFailD}</camunda:inputParameter>
+          <camunda:outputParameter name="responseD">${response}</camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_145mbof</bpmn:incoming>
+      <bpmn:outgoing>Flow_1kmtibt</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_145mbof" sourceRef="Gateway_0l542zz" targetRef="Activity_11lus82">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${shouldRunD}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0kxb55g" sourceRef="Activity_07vbga2" targetRef="Gateway_0nwak4z" />
+    <bpmn:inclusiveGateway id="Gateway_0nwak4z">
+      <bpmn:incoming>Flow_0kxb55g</bpmn:incoming>
+      <bpmn:incoming>Flow_0g83dks</bpmn:incoming>
+      <bpmn:incoming>Flow_1kmtibt</bpmn:incoming>
+      <bpmn:outgoing>Flow_0rwvgs8</bpmn:outgoing>
+    </bpmn:inclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0g83dks" sourceRef="Activity_0hav5sf" targetRef="Gateway_0nwak4z" />
+    <bpmn:sequenceFlow id="Flow_1kmtibt" sourceRef="Activity_11lus82" targetRef="Gateway_0nwak4z" />
+    <bpmn:serviceTask id="Activity_1vzqy81" name="Process results" camunda:delegateExpression="${processResults}">
+      <bpmn:incoming>Flow_0rwvgs8</bpmn:incoming>
+      <bpmn:outgoing>Flow_0o3s8u8</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0rwvgs8" sourceRef="Gateway_0nwak4z" targetRef="Activity_1vzqy81" />
+    <bpmn:endEvent id="Event_0ti6nbz">
+      <bpmn:incoming>Flow_0o3s8u8</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0o3s8u8" sourceRef="Activity_1vzqy81" targetRef="Event_0ti6nbz" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_02cpmi7">
+      <bpmndi:BPMNEdge id="Flow_0sr227h_di" bpmnElement="Flow_0sr227h">
+        <di:waypoint x="215" y="210" />
+        <di:waypoint x="260" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ezj4i0_di" bpmnElement="Flow_0ezj4i0">
+        <di:waypoint x="360" y="210" />
+        <di:waypoint x="405" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0t9i5zd_di" bpmnElement="Flow_0t9i5zd">
+        <di:waypoint x="430" y="185" />
+        <di:waypoint x="430" y="120" />
+        <di:waypoint x="520" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1cr9exk_di" bpmnElement="Flow_1cr9exk">
+        <di:waypoint x="455" y="210" />
+        <di:waypoint x="520" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_145mbof_di" bpmnElement="Flow_145mbof">
+        <di:waypoint x="430" y="235" />
+        <di:waypoint x="430" y="300" />
+        <di:waypoint x="520" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0kxb55g_di" bpmnElement="Flow_0kxb55g">
+        <di:waypoint x="620" y="210" />
+        <di:waypoint x="685" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0g83dks_di" bpmnElement="Flow_0g83dks">
+        <di:waypoint x="620" y="120" />
+        <di:waypoint x="710" y="120" />
+        <di:waypoint x="710" y="185" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1kmtibt_di" bpmnElement="Flow_1kmtibt">
+        <di:waypoint x="620" y="300" />
+        <di:waypoint x="710" y="300" />
+        <di:waypoint x="710" y="235" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0rwvgs8_di" bpmnElement="Flow_0rwvgs8">
+        <di:waypoint x="735" y="210" />
+        <di:waypoint x="760" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0o3s8u8_di" bpmnElement="Flow_0o3s8u8">
+        <di:waypoint x="860" y="210" />
+        <di:waypoint x="892" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="192" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1xgojgv_di" bpmnElement="Activity_1xgojgv">
+        <dc:Bounds x="260" y="170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_07zkem2_di" bpmnElement="Gateway_0l542zz">
+        <dc:Bounds x="405" y="185" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0hav5sf_di" bpmnElement="Activity_0hav5sf">
+        <dc:Bounds x="520" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_07vbga2_di" bpmnElement="Activity_07vbga2">
+        <dc:Bounds x="520" y="170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_11lus82_di" bpmnElement="Activity_11lus82">
+        <dc:Bounds x="520" y="260" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1bf1m41_di" bpmnElement="Gateway_0nwak4z">
+        <dc:Bounds x="685" y="185" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1vzqy81_di" bpmnElement="Activity_1vzqy81">
+        <dc:Bounds x="760" y="170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0ti6nbz_di" bpmnElement="Event_0ti6nbz">
+        <dc:Bounds x="892" y="192" width="36" height="36" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

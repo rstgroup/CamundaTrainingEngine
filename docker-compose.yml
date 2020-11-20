@@ -36,3 +36,13 @@ services:
     ports:
       - 1025:1025
       - 8025:8025
+  rabbitmqv2:
+    image: rabbitmq:3-management-alpine
+    restart: always
+    hostname: integration-rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=camunda-demo
+      - RABBITMQ_DEFAULT_PASS=guest
+    ports:
+      - "5673:5672"
+      - "15673:15672"
